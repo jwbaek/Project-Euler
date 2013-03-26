@@ -224,8 +224,7 @@ def is_permutation(n1, n2):
     return 0
 
 def has_ndigits(num, digits):
-    res = num/10**(digits-1)
-    return res != 0 and res < 10
+    return len(str(num)) == digits
 
 """
 PROBLEM 63
@@ -319,19 +318,10 @@ Subsequently other Mersenne primes, of the form 2p1, have been found which conta
 more digits.
 
 However, in 2004 there was found a massive non-Mersenne prime which contains
- 2,357,207 digits: 2^843327830457+1.
+ 2,357,207 digits: 28433*2^7830457+1.
 
 Find the last ten digits of this prime number.
 """
 
 def prob97():
-    i = 0
-    curr = 2
-    while i < 843327830457:
-        curr *= 2
-        curr%(10**10)
-        i += 1
-    return curr+1
-
-
-
+    return (28433*pow(2, 7830457,10**10) +1)%10**10

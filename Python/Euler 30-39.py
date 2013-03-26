@@ -183,20 +183,12 @@ def simplifyWrong(num,denom):
             return True
     return False
 
-def gcf(num1,num2):
-    a = num1
-    b = num2
-    while (a != 0):
-        temp = a
-        a = b%a
-        b = temp
-    return b
 def tensDigit(num):
     return (num/10)%10
 def onesDigit(num):
     return num%10
 def simplify(num,denom):
-    factor = gcf(num,denom)
+    factor = gcd(num,denom)
     return [num/factor, denom/factor]
 
 
@@ -300,7 +292,7 @@ def allRotations(n):
 """
 PROBLEM 36
 
-The decimal number, 585 = 10010010012 (binary),
+The decimal number, 585 = 1001001001 (binary),
 is palindromic in both bases.
 
 Find the sum of all numbers, less than one million,
@@ -315,18 +307,6 @@ def prob36():
         if isPalin(i) and isPalin(toBinary(i)):
             sumSoFar += i
     return sumSoFar
-
-
-def toBinary(n):
-    binaryli = []
-    while n != 0:
-        diff = n%2
-        binaryli.append(diff)
-        n -= diff
-        n /= 2
-    binaryli.reverse()
-    return listToNum(binaryli)
-
 
 """
 PROBLEM 37

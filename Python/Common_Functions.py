@@ -62,3 +62,13 @@ def prime_sieve(largest):
                 listP[mul*j] = 0
                 mul += 1
     return prime
+
+def toBinary(n):
+    binaryli = []
+    while n != 0:
+        diff = n%2
+        binaryli.append(diff)
+        n -= diff
+        n /= 2
+    binaryli.reverse()
+    return listToNum(binaryli)
