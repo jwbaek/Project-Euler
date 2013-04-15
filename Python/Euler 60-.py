@@ -253,62 +253,42 @@ def num_digits(n):
     return len(str(n))
 
 """
-PROBLEM 69
+PROBLEM 71
+Consider the fraction, n/d, where n and d are positive integers.
+ If nd and HCF(n,d)=1, it is called a reduced proper fraction.
 
-Euler's Totient function, ?(n) [sometimes called the phi function],
-is used to determine the number of numbers less than n
-which are relatively prime to n. For example, as 1, 2, 4, 5, 7, and 8,
-are all less than nine and relatively prime to nine, ?(9)=6.
+If we list the set of reduced proper fractions for d <= 8
+in ascending order of size, we get:
 
-n	Relatively Prime	?(n)	  n/?(n)
-2	1	                  1	        2
-3	1,2	                  2	        1.5
-4	1,3	                  2       	2
-5	1,2,3,4	              4	        1.25
-6	1,5	                  2	        3
-7	1,2,3,4,5,6	          6	        1.1666...
-8	1,3,5,7	              4	        2
-9	1,2,4,5,7,8	          6	        1.5
-10	1,3,7,9	              4      	2.5
-It can be seen that n=6 produces a maximum n/?(n) for n <= 10.
+1/8, 1/7, 1/6, 1/5, 1/4, 2/7, 1/3, 3/8, 2/5, 3/7, 1/2, 4/7, 3/5, 5/8, 2/3, 5/7, 3/4, 4/5, 5/6, 6/7, 7/8
 
-Find the value of n  1,000,000 for which n/?(n) is a maximum.
+It can be seen that 2/5 is the fraction immediately to the left of 3/7.
+
+By listing the set of reduced proper fractions for d <= 1,000,000
+in ascending order of size, find the numerator of the fraction
+ immediately to the left of 3/7.
 """
-def prob69():
-    max_num = 1000000
-    d = relative_primes_dict(max_num)
-    max_totient = 3
-    number = 6
-    for i in range(2,max_num):
-        curr_totient = totient(i, d[i])
-        if max_totient < curr_totient:
-            max_totient = curr_totient
-            number = i
-            print number
-    return number, max_totient
+def reduce(num, denom):
+    g = gcd(num, denom)
+    return num/g, denom/g
 
-def relative_primes_dict(largest=1000000):
-    d = dict((i, 1) for i in range(largest))
-    listP = [1] * (largest+1)
-    listP[0] = 0
-    listP[1] = 0
-    prime = [] # list of all prime numbers
-    for j in range(2, largest):
-        if listP[j] == 1:
-            prime.append(j)
-            mul = 1
-            while mul*j < largest:
-                listP[mul*j] = 0
-                d[mul*j] += mul - 1
-                mul += 1
-    return d
+def prob71():
+    left_num = 2
+    left_denom = 5
+    left_so_far = Decimal(left_num)/Decimal(left_denom)
 
-def totient(n, relative_primes):
-    count = n - relative_primes
-    if count == 0:
-        print n
-    return Decimal(n)/Decimal(count)
-
+    to_find = Decimal(3)/Decimal(7)
+    biggest = 1000000
+    for denom in xrange(8,biggest):
+        # find biggest numerator such that numerator/denominator < 3/7
+        curr_num = int(math.floor(denom*to_find))
+        curr_frac = Decimal(curr_num)/Decimal(denom)
+        n, d = reduce(curr_num, denom)
+        if curr_frac > left_so_far and not (n ==3 and d==7):
+            left_so_far = curr_frac
+            left_num = n
+            left_denom = d
+    return left_num, left_denom
 
 """
 PROBLEM 97
