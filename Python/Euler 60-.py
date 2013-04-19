@@ -309,18 +309,16 @@ by only moving right and down.
 """
 prob81max = 79
 def prob81():
-    f = open("prob81.txt")
+    f = open("matrix.txt")
     matrix= []
     for line in f:
         matrix.append([int(l) for l in line.split(",")])
-    print matrix
     memoized = [[-1 for i in range(80)] for j in range(80)]
     return findMinPath81(0,0,matrix, memoized)
 
 def findMinPath81(row, col, matrix, memoized):
     curr = matrix[row][col]
     if row == prob81max and col == prob81max:
-        print 'MAX', curr
         return curr
     elif memoized[row][col] == -1:
         if row == prob81max:
@@ -330,6 +328,84 @@ def findMinPath81(row, col, matrix, memoized):
         else:
             memoized[row][col] = curr+min(findMinPath81(row+1, col, matrix, memoized),findMinPath(row, col+1, matrix, memoized))
     return memoized[row][col]
+
+"""
+PROBLEM 82
+
+NOTE: This problem is a more challenging version of Problem 81.
+
+The minimal path sum in the 5 by 5 matrix below, 
+by starting in any cell in the left column and 
+finishing in any cell in the right column, and only moving up, 
+down, and right, is indicated in red and bold; the sum is equal to 994.
+
+
+131 673 234 103 18
+201 96  342 965 150
+630 803 746 422 111
+537 699 497 121 956
+805 732 524 37  331
+
+Find the minimal path sum, in matrix.txt (right click and '
+    Save Link/Target As...'), a 31K text file containing a 80 by 80 matrix, 
+from the left column to the right column.
+"""
+
+def prob82():
+    f = open("matrix.txt")
+    matrix= []
+    for line in f:
+        matrix.append([int(l) for l in line.split(",")])
+    memoized = [[False for i in range(80)] for j in range(80)]
+    partial_m = [[{"up":False, "down":False, "right":False} for i in range(80)] for j in range(80)]
+    firsts = [findMinPath82(i,0,matrix, memoized, "first", partial_m) for i in range(80)]
+    answer= min([findMinPath82(i,0,matrix, memoized, "first", partial_m) for i in range(80)])
+    return answer
+
+def findMinPath82(row, col, matrix, memoized, cameFrom, partial_m):
+    curr = matrix[row][col]
+    toCheck = {"up":1, "down":1, "right":1}
+    # if right most
+    if col == prob81max:
+        memoized[row][col] = curr
+    if memoized[row][col]:
+        return memoized[row][col]
+    else:
+        if cameFrom == "up" or partial_m[row][col]["down"]:
+            toCheck["down"]=0
+        if cameFrom == "down" or partial_m[row][col]["up"]:
+            toCheck["up"]=0
+        if partial_m[row][col]["right"]:
+            toCheck["right"]=0
+        # lowest
+        if row == prob81max:
+            toCheck["down"]=0
+            partial_m[row][col]["down"]=-1
+        # highest
+        elif row == 0:
+            toCheck["up"]=0
+            partial_m[row][col]["up"]=-1
+    partial = curr+findMinHelper(row, col, matrix, memoized, toCheck, partial_m)
+    if all(partial_m[row][col].values()):
+        memoized[row][col] = curr+min([v for v in partial_m[row][col].values() if v >0])
+        return memoized[row][col]
+    return partial
+
+
+def findMinHelper(row, col, matrix, memoized, tocheck, partial_m):
+    peers = []
+    if tocheck["right"]:
+        partial_m[row][col]["right"]= findMinPath82(row, col+1, matrix, memoized, "right", partial_m)
+        peers.append(partial_m[row][col]["right"])
+    if tocheck["up"]:
+        partial_m[row][col]["up"]= findMinPath82(row-1, col, matrix, memoized, "up", partial_m)
+        peers.append(partial_m[row][col]["up"])
+    if tocheck["down"]:
+        partial_m[row][col]["down"]= findMinPath82(row+1, col, matrix, memoized, "down", partial_m)
+        peers.append(partial_m[row][col]["down"])
+    if not peers:
+        return min([v for v in partial_m[row][col].values() if v >0])
+    return min(peers)
 
 """
 PROBLEM 97
