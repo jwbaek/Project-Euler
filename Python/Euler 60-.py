@@ -253,6 +253,42 @@ def num_digits(n):
     return len(str(n))
 
 """
+PROBLEM 69
+
+Euler's Totient function, ?(n) [sometimes called the phi function],
+is used to determine the number of numbers less than n
+which are relatively prime to n. For example, as 1, 2, 4, 5, 7, and 8,
+are all less than nine and relatively prime to nine, ?(9)=6.
+
+n	Relatively Prime	?(n)	  n/?(n)
+2	1	                  1	        2
+3	1,2	                  2	        1.5
+4	1,3	                  2       	2
+5	1,2,3,4	              4	        1.25
+6	1,5	                  2	        3
+7	1,2,3,4,5,6	          6	        1.1666...
+8	1,3,5,7	              4	        2
+9	1,2,4,5,7,8	          6	        1.5
+10	1,3,7,9	              4      	2.5
+It can be seen that n=6 produces a maximum n/?(n) for n <= 10.
+
+Find the value of n <= 1,000,000 for which n/?(n) is a maximum.
+
+Had help from the internet.
+"""
+
+# multiply primes until over 1,000,000
+def prob69():
+    primes_set = prime_sieve(1000)
+    primes = list(primes_set)
+    primes.sort()
+    prod = 1
+    for num in primes:
+        prod *= num
+        if prod > 1000000:
+            return prod/num
+
+"""
 PROBLEM 71
 Consider the fraction, n/d, where n and d are positive integers.
  If nd and HCF(n,d)=1, it is called a reduced proper fraction.
@@ -334,9 +370,9 @@ PROBLEM 82
 
 NOTE: This problem is a more challenging version of Problem 81.
 
-The minimal path sum in the 5 by 5 matrix below, 
-by starting in any cell in the left column and 
-finishing in any cell in the right column, and only moving up, 
+The minimal path sum in the 5 by 5 matrix below,
+by starting in any cell in the left column and
+finishing in any cell in the right column, and only moving up,
 down, and right, is indicated in red and bold; the sum is equal to 994.
 
 
@@ -347,12 +383,12 @@ down, and right, is indicated in red and bold; the sum is equal to 994.
 805 732 524 37  331
 
 Find the minimal path sum, in matrix.txt (right click and '
-    Save Link/Target As...'), a 31K text file containing a 80 by 80 matrix, 
+    Save Link/Target As...'), a 31K text file containing a 80 by 80 matrix,
 from the left column to the right column.
 """
 
 def prob82():
-    f = open("matrix.txt")
+    f = open("C:\Users\Jackie\Documents\Project Euler\Python\prob81.txt")
     matrix= []
     for line in f:
         matrix.append([int(l) for l in line.split(",")])
@@ -406,6 +442,62 @@ def findMinHelper(row, col, matrix, memoized, tocheck, partial_m):
     if not peers:
         return min([v for v in partial_m[row][col].values() if v >0])
     return min(peers)
+
+
+
+
+"""
+PROBLEM 92
+
+A number chain is created by continuously adding the square of the digits
+in a number to form a new number until it has been seen before.
+
+For example,
+
+44  32  13  10  1  1
+85  89  145  42  20  4  16  37  58  89
+
+Therefore any chain that arrives at 1 or 89 will become stuck in an endless loop.
+What is most amazing is that EVERY starting number will eventually arrive at 1 or 89.
+
+How many starting numbers below ten million will arrive at 89?
+"""
+
+def prob92():
+    count = 0
+    alreadySeen = {}
+    maxSquareOfDigits = 568  # 9^2 * 7 =567
+    for num in xrange(1,maxSquareOfDigits+1):
+        if num in alreadySeen:
+            if alreadySeen[num] == 89:
+                count += 1
+            continue
+        else:
+            curr = num
+            sequence = set([curr])
+            result = 89
+            while curr != 89 and curr != 1:
+                curr = squareOfDigits(curr)
+                sequence.add(curr)
+                if curr in alreadySeen:
+                    result = alreadySeen[curr]
+                    break
+            if curr == 1:
+                result = 1
+            if result== 89:
+                count+=1
+            for term in sequence:
+                alreadySeen[term]=result
+    # now alreadySeen contains all info needed till 10,000,000!
+    for num in xrange(maxSquareOfDigits+1, 10000001):
+        digitsSquare = squareOfDigits(num)
+        if alreadySeen[digitsSquare]==89:
+            count+=1
+    return count
+
+def squareOfDigits(num):
+    return sum([int(s)**2 for s in str(num)])
+
 
 """
 PROBLEM 97
