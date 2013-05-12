@@ -565,7 +565,6 @@ def num_newprimes_spiral(n):
             count += 1
     return count
 
-print prob58()
 
 
 

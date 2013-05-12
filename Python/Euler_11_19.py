@@ -175,9 +175,6 @@ def prob17():
             count += dictLet[ones]
     return count + 8 + 3
 
-print prob17()
-
-
 """
 PROBLEM 19
 

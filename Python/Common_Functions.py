@@ -1,6 +1,23 @@
+# returns all factors of n in a set
+def factors(n):    
+    return set(reduce(list.__add__, 
+                ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
+
+def isPrime(n):
+  if n == 2 or n == 3: return True
+  if n < 2 or n%2 == 0: return False
+  if n < 9: return True
+  if n%3 == 0: return False
+  r = int(n**0.5)
+  f = 5
+  while f <= r:
+    if n%f == 0: return False
+    if n%(f+2) == 0: return False
+    f +=6
+  return True  
 
 # probably the worst 'isPrime' function ever..
-def isPrime(n):
+def isPrime_mine(n):
     if n == 1:
         return False
     if n == 2:
@@ -44,6 +61,10 @@ def gcd(num1,num2):
         a = b%a
         b = temp
     return b
+
+def lcm(a,b):
+    gcds = gcd(a,b)
+    return a/gcds * b
 
 # returns set of all primes less than largest
 def prime_sieve(largest):
